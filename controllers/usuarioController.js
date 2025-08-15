@@ -68,7 +68,6 @@ if(!usuario.verificarPassword(password)){
 
 //Autenticar al Usuario
 const token = generarJWT({id:usuario.id,nombre:usuario.nombre});
-console.log(token);
 
 return res.cookie('_token', token,{
     httpOnly: true, // Esto evita los ataques cross site, esto hace que un cookie no sea accesible desde la api js

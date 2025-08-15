@@ -3,7 +3,7 @@ import {body} from "express-validator";
 import {admin,crear,guardar, agregarImagen, almacenarImagen, editar,guardarCambios, eliminar, mostrarPropiedad} from "../controllers/propiedadController.js";
 import protejerRuta from "../middleware/protejerRuta.js";
 import upload from "../middleware/subirImagen.js";
-
+import identificarUsuario from "../middleware/identificarUsuario.js";
 
 const router = express.Router();
 //Ver las propiedades
@@ -59,7 +59,9 @@ router.post('/propiedades/eliminar/:id',
 
 
 //Area Publica osea que no vamos a protejer la ruta y cualquier usuario tiene acceso a ella. 
-router.get('/propiedad/:id' , mostrarPropiedad);
+router.get('/propiedad/:id' ,
+identificarUsuario, 
+mostrarPropiedad);
 
 
 
