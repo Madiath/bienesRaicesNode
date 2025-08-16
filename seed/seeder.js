@@ -35,20 +35,20 @@ const importarDatos = async () =>{
 const eliminarDatos = async() => {
 try{
   
-await Propiedad.drop();    
+//await Propiedad.drop();    
 
-    await Promise.all([
+    //await Promise.all([
            
-           Categoria.destroy({where: {}, truncate: true}),
-           Precio.destroy({where: {}, truncate: true}),
-           Usuario.destroy({where:{}, truncate: true})
+        //   Categoria.destroy({where: {}, truncate: true}),
+        //   Precio.destroy({where: {}, truncate: true}),
+        //   Usuario.destroy({where:{}, truncate: true})
            /*El truncate se pone cuando yo quiero eliminar tambien el id en la db y no solo los datos, osea sí yo tengo 
            10 datos y los elimino.. Cuando vuelva a insertar un dato nuevo no quiero que ese dato empiece con el numero 
            11...Sino denuevo con el 1 */
-       ])
+      // ])
 
     //Otra forma de eliminar los datos, pero elimina todas tablas osea el contenido. Esto es en el caso que tuvieras muchas pero como son 2
-    //await db.afterSync({force: true});
+   await db.sync({ force: true });
 
        console.log("Datos eliminados correctamente");
        exit(0);
