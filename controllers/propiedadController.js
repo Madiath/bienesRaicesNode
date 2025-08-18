@@ -1,7 +1,7 @@
 import {unlink} from 'node:fs/promises';
 import {validationResult} from 'express-validator';
-import {Precio,Categoria,Propiedad, Mensaje} from '../models/relaciones.js';
-import {esVendedor} from '../helpers/index.js';
+import {Precio,Categoria,Propiedad, Mensaje, Usuario} from '../models/relaciones.js';
+import {esVendedor, formatearFecha} from '../helpers/index.js';
 
 const admin = async (req, res) =>{
 
@@ -21,7 +21,7 @@ try {
     const {id} = req.usuario;
 
     //Limites y Offset para el paginador
-    const limit = 5;
+    const limit = 10;
     const offset = ((paginaActual * limit) - limit);
 
     
@@ -32,7 +32,9 @@ try {
         offset,
         where:{usuarioId: id}, 
         include:[{model:Precio, as: 'precio'},
-        {model:Categoria, as: 'categoria'}]
+        {model:Categoria, as: 'categoria'},
+        {model:Mensaje, as: 'mensajes'}
+    ]
     }),
         Propiedad.count({ //Contamos la cantidad de propiedades que sean de ese usuario
             where: {usuarioId: id}
@@ -439,7 +441,41 @@ if(!resultado.isEmpty()){
 
 //Leer mensajes resibidos 
 const verMensajes = async (req , res ) => {
-res.send('Mensajes aqui')
+
+
+
+    const {id} = req.params
+ 
+ 
+    //Validar que la propiedad exista
+    const propiedad = await Propiedad.findByPk(id , {
+        include:[
+            {model:Mensaje, as: 'mensajes',
+                include:[
+                        {model:Usuario.scope('eliminarPassword'), as:'usuario'}
+                ]//Nos traemos al usuario desde el modelo y no la propiedad 
+            }
+        ]
+    });
+ 
+     if(!propiedad){
+    return res.redirect('/mis-propiedades');
+ }
+
+
+
+    //Quien visita la URL, es el que creo la propiedad 
+    if(propiedad.usuarioId.toString() !== req.usuario.id.toString()){
+    return res.redirect('/mis-propiedades');
+    }
+
+
+
+res.render('propiedades/mensajes',{
+    pagina: 'Mensajes',
+    mensajes: propiedad.mensajes,
+    formatearFecha
+});
 }
 
 
