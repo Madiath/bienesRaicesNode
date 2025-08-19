@@ -77,6 +77,10 @@ return res.cookie('_token', token,{
 
 }
 
+const cerrarSesion = (req, res) => {
+   return res.clearCookie('_token').status(200).redirect('/auth/login');
+}
+
 
 
 const formularioRegistro = (req, res) => {
@@ -313,6 +317,7 @@ export
 {
     formularioLogin,
     autenticar,
+    cerrarSesion,
     formularioRegistro,
     registrar,
     formularioOlvidePassword,
